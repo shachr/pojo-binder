@@ -1,5 +1,5 @@
 # POJO Binder
-Decoupled pojo binder aim to bind anything to a pojo.
+Self-contained pojo binder that will bind anything to a pojo.
 
 
 ### Version
