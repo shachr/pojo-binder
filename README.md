@@ -3,7 +3,7 @@ Self-contained binder that will bind anything to a pojo.
 
 
 ### Version
-1.0.0
+1.0.1
 
 ## Usage
 ```
