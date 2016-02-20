@@ -3,7 +3,7 @@ Self-contained binder that will bind anything to a pojo.
 
 
 ### Version
-1.0.1
+1.0.3
 
 ## Usage
 ```
@@ -48,7 +48,7 @@ dataBinder.read(Json.class, json);
 
 
 AddUserRequest model = queryBinder.bind(AddUserRequest.class);
-AddUserRequest model = dataBinder.bind(model);
+model = dataBinder.bind(model);
 ```
 
 License
