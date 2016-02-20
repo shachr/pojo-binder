@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  *
  * @author TapasB
  */
-public class QueryString {
+public class QueryStringParser {
 
     public static final String DEFAUL_CHARSET = "UTF-8";
     private static final Pattern KEY_PATTERN = Pattern.compile("^([^\\[$]+)(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?(?:\\[([^\\]]+)\\])?$",Pattern.CASE_INSENSITIVE);
@@ -39,12 +39,12 @@ public class QueryString {
      * @throws NullPointerException
      *             If the given <tt>queryString</tt> is null
      */
-    public QueryString(String queryString) throws NullPointerException {
+    public QueryStringParser(String queryString) throws NullPointerException {
         this(queryString, DEFAUL_CHARSET, null);
     }
 
     public static Map<String,Object> parse(String queryString, String charsetName, Map<String,Object> initialValue){
-        QueryString qs = new QueryString(queryString, charsetName, initialValue);
+        QueryStringParser qs = new QueryStringParser(queryString, charsetName, initialValue);
         return initialValue;
     }
 
@@ -65,7 +65,7 @@ public class QueryString {
      *             If no support for the named <tt>charsetName</tt> is available
      *             in this instance of the Java virtual machine
      */
-    public QueryString(String queryString, String charsetName, Map<String,Object> initialValue) throws NullPointerException, IllegalCharsetNameException, IllegalArgumentException, UnsupportedCharsetException {
+    public QueryStringParser(String queryString, String charsetName, Map<String,Object> initialValue) throws NullPointerException, IllegalCharsetNameException, IllegalArgumentException, UnsupportedCharsetException {
         if (initialValue == null) initialValue = new HashMap();
         this._hash = initialValue;
 

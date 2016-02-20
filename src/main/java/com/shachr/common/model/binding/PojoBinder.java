@@ -1,25 +1,26 @@
 package com.shachr.common.model.binding;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
+import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
+import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.shachr.common.model.binding.inputs.*;
-import org.apache.avro.Schema;
-import scala.Tuple2;
+import com.shachr.common.model.binding.inputs.abstraction.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PojoBinder {
 
-
-    final static Input _jsonInput;
-    final static Input _qsInput;
-    final static Input _avroInput;
+    final static Map<Class,Input> _inputs;
     static {
-        _qsInput = new QueryStringInput();
-        _jsonInput = new JsonInput();
-        _avroInput = new AvroInput();
+        _inputs = new HashMap();
     }
 
     final ObjectMapper _mapper;
@@ -46,44 +47,96 @@ public class PojoBinder {
     }
 
 
-    public void Json(Object json) throws InputException {
-        _map = _jsonInput.read(json, _map);
+    public <T> T bind(Class<T> clazz) throws IOException, IllegalAccessException, InstantiationException {
+        T pojo = clazz.newInstance();
+        JsonNode jsonNode = _mapper.valueToTree(_map);
+        ObjectReader updater = _mapper.readerForUpdating(pojo);
+        return updater.readValue(jsonNode);
     }
 
-    public void queryString(Object qs) throws InputException {
-        _map = _qsInput.read(qs, _map);
-    }
-
-    public void avro(Object bytes, Schema schema)throws InputException {
-        _map = _avroInput.read(new Tuple2(schema, bytes), _map);
-    }
-
-    public <T> T create(Class<T> clazz) throws ClassNotFoundException{
-        return _mapper.convertValue(_map, clazz);
-    }
-
-    public <T> T update(T object) throws IOException {
+    public <T> T bind(T object) throws IOException {
         JsonNode jsonNode = _mapper.valueToTree(_map);
         ObjectReader updater = _mapper.readerForUpdating(object);
         return updater.readValue(jsonNode);
     }
 
-    private void _merge(Map<String, Object> destination, Map<String, Object> source) {
-        for(Object key : source.keySet()) {
-            String key2 = (String) key;
-            Object dup = source.get(key2);
-            if(dup instanceof HashMap && destination.containsKey(key2)
-                    && destination.get(key2) instanceof HashMap) {
-                Map<String, Object> kk = (Map<String, Object>) destination.get(key2);
-                _merge(kk, (Map<String, Object>) dup);
-            } else if(dup instanceof HashMap && destination.containsKey(key2)
-                    && !(destination.get(key2) instanceof HashMap)) {
-                HashMap kk = new HashMap<String, Object>();
-                kk.put(key2, destination.get(key2));
-                _merge(kk, (Map<String, Object>) dup);
-            } else {
-                destination.put(key2, dup);
+    public <T extends InputWithNoArguments, Value > void read(Class<T> clazz, Value value) throws InputException {
+        T input = null;
+        try {
+            if (!_inputs.containsKey(clazz)) {
+                input = clazz.newInstance();
+                _inputs.put(clazz, input);
+            } else
+                input = (T) _inputs.get(clazz);
+
+            input.read(_map, value);
+        }catch (Throwable ex){
+            throw new InputException("failed to read input", ex);
+        }
+    }
+
+    public <T extends InputWithOneArgument, Value, Arg1> void read(Class<T> clazz, Value value, Arg1 arg1) throws InputException {
+        try {
+            T input = null;
+            if(!_inputs.containsKey(clazz)) {
+                input = clazz.newInstance();
+                _inputs.put(clazz, input);
             }
+            else
+                input = (T)_inputs.get(clazz);
+
+            input.read(_map, value, arg1);
+        }catch (Throwable ex){
+            throw new InputException("failed to read input", ex);
+        }
+    }
+
+    public <T extends InputWithTwoArguments, Value, Arg1,Arg2> void read(Class<T> clazz, Value value, Arg1 arg1, Arg2 arg2) throws InputException {
+        try{
+            T input = null;
+            if(!_inputs.containsKey(clazz)) {
+                input = clazz.newInstance();
+                _inputs.put(clazz, input);
+            }
+            else
+                input = (T)_inputs.get(clazz);
+
+            input.read(_map, value, arg1,arg2);
+        }catch (Throwable ex){
+            throw new InputException("failed to read input", ex);
+        }
+    }
+
+    public <T extends InputWithThreeArguments, Value, Arg1,Arg2,Arg3> void read(Class<T> clazz, Value value, Arg1 arg1, Arg2 arg2, Arg3 arg3) throws  InputException {
+        try{
+            T input = null;
+            if(!_inputs.containsKey(clazz)) {
+                input = clazz.newInstance();
+                _inputs.put(clazz, input);
+            }
+            else
+                input = (T)_inputs.get(clazz);
+
+            input.read(_map, value, arg1,arg2, arg3);
+
+        }catch (Throwable ex){
+            throw new InputException("failed to read input", ex);
+        }
+    }
+
+    public <T extends InputWithFourArguments, Value, Arg1, Arg2, Arg3, Arg4> void read(Class<T> clazz, Value value, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) throws InputException {
+        try{
+            T input = null;
+            if(!_inputs.containsKey(clazz)) {
+                input = clazz.newInstance();
+                _inputs.put(clazz, input);
+            }
+            else
+                input = (T)_inputs.get(clazz);
+
+            input.read(_map, value, arg1,arg2, arg3, arg4);
+        }catch (Throwable ex){
+            throw new InputException("failed to read input", ex);
         }
     }
 
