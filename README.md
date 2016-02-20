@@ -26,11 +26,21 @@ AddUserRequest model = binder.bind(AddUserRequest.class);
 
 ## Advanced Usage
 ```
+public class AddUserRequest {
+
+    @Body()
+    public User user;
+
+    @Header()
+    public String token;
+}
+```
+```
 BindingContext binderContext = new BindingContext();
 PojoBinder queryBinder = new PojoBinder(binderContext, Query.class);
 PojoBinder bodyBinder = new PojoBinder(binderContext, Body.class);
 
-String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
+String qs = "token=123";
 queryBinder.read(QueryString.class, qs);
 
 String json = "{"user": { "info": { "hobbies": ["soccer","playstation"]} }  }";
