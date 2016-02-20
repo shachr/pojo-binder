@@ -1,5 +1,5 @@
 # POJO Binder
-Self-contained pojo binder that will bind anything to a pojo.
+Self-contained binder that will bind anything to a pojo.
 
 
 ### Version
@@ -7,8 +7,8 @@ Self-contained pojo binder that will bind anything to a pojo.
 
 ## Usage
 ```
-POJO pojo = new POJO()
-POJOBinder binder = new POJOBinder();
+AddUserRequest pojo = new AddUserRequest()
+PojoBinder binder = new PojoBinder();
 
 String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
 binder.queryString(qs);
