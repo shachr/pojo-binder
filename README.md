@@ -7,7 +7,6 @@ Self-contained binder that will bind anything to a pojo.
 
 ## Usage
 ```
-AddUserRequest pojo = new AddUserRequest()
 PojoBinder binder = new PojoBinder();
 
 String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
@@ -22,7 +21,7 @@ byte[] bytes = getBytesFromSomewhere();
 binder.read(Avro.class, bytes, schema);
 
 
-RequestModel model = binder.bind(RequestModel.class);
+AddUserRequest model = binder.bind(AddUserRequest.class);
 ```
 
 License
