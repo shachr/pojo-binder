@@ -6,6 +6,7 @@ import com.shachr.common.model.binding.PojoBinder;
 import com.shachr.common.model.binding.BindingContext;
 import com.shachr.common.model.binding.annotations.Body;
 import com.shachr.common.model.binding.annotations.Header;
+import com.shachr.common.model.binding.annotations.Query;
 import com.shachr.common.model.binding.inputs.Avro;
 import com.shachr.common.model.binding.inputs.InputException;
 import com.shachr.common.model.binding.inputs.Json;
@@ -144,7 +145,7 @@ public class PojoBinderTest {
             timer.start();
 
             BindingContext binderContext = new BindingContext();
-            PojoBinder dataBinder = new PojoBinder(binderContext, com.shachr.common.model.binding.annotations.QueryString.class, Body.class);
+            PojoBinder dataBinder = new PojoBinder(binderContext, Query.class, Body.class);
             PojoBinder headerBinder = new PojoBinder(binderContext, Header.class);
 
             qs = "token=origamilogic";

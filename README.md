@@ -3,11 +3,10 @@ Self-contained binder that will bind anything to a pojo.
 
 
 ### Version
-1.0.0
+1.0.1
 
 ## Usage
 ```
-AddUserRequest pojo = new AddUserRequest()
 PojoBinder binder = new PojoBinder();
 
 String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
@@ -22,7 +21,34 @@ byte[] bytes = getBytesFromSomewhere();
 binder.read(Avro.class, bytes, schema);
 
 
-RequestModel model = binder.bind(RequestModel.class);
+AddUserRequest model = binder.bind(AddUserRequest.class);
+```
+
+## Advanced Usage
+```
+public class AddUserRequest {
+
+    @Body()
+    public User user;
+
+    @Header()
+    public String token;
+}
+```
+```
+BindingContext binderContext = new BindingContext();
+PojoBinder queryBinder = new PojoBinder(binderContext, Query.class);
+PojoBinder bodyBinder = new PojoBinder(binderContext, Body.class);
+
+String qs = "token=123";
+queryBinder.read(QueryString.class, qs);
+
+String json = "{"user": { "info": { "hobbies": ["soccer","playstation"]} }  }";
+dataBinder.read(Json.class, json);
+
+
+AddUserRequest model = queryBinder.bind(AddUserRequest.class);
+AddUserRequest model = dataBinder.bind(model);
 ```
 
 License
