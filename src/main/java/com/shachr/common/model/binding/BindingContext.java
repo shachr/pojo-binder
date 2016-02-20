@@ -15,6 +15,6 @@ import java.util.Map;
  *  helpful article:
  *  http://www.baeldung.com/jackson-annotations
  */
-public class ModelBinderContext extends HashMap<String,Object>{
+public class BindingContext extends HashMap<String,Object>{
 
 }

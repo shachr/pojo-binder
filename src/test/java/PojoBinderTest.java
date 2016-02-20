@@ -2,8 +2,8 @@
  * Created by shachar on 14/02/2016.
  */
 
-import com.shachr.common.model.binding.ModelBinder;
-import com.shachr.common.model.binding.ModelBinderContext;
+import com.shachr.common.model.binding.PojoBinder;
+import com.shachr.common.model.binding.BindingContext;
 import com.shachr.common.model.binding.annotations.Body;
 import com.shachr.common.model.binding.annotations.Header;
 import com.shachr.common.model.binding.annotations.QueryString;
@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ModelBinderTest {
+public class PojoBinderTest {
 
     @Test
     public void test_qs_simple_model_binder() throws InputException, ClassNotFoundException {
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         Object qs = "user[name]=shachar&user[age]=32&user[info][hobbies][0]=basketball&user[info][hobbies][1]=xbox";
         binder.queryString(qs);
         RequestModel model = binder.create(RequestModel.class);
@@ -49,7 +49,7 @@ public class ModelBinderTest {
 
     @Test
     public void test_validation() throws InputException, ClassNotFoundException {
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         Object qs = "user[age]=32";
         binder.queryString(qs);
         RequestModel model = binder.create(RequestModel.class);
@@ -62,7 +62,7 @@ public class ModelBinderTest {
 
     @Test
     public void test_qs_complicated_model_binder() throws InputException, ClassNotFoundException {
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
         binder.queryString(qs);
         RequestModel model = binder.create(RequestModel.class);
@@ -77,7 +77,7 @@ public class ModelBinderTest {
     @Test
     public void test_json_simple_model_binder() throws InputException, ClassNotFoundException {
 
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"name\": \"shachar\", \"age\": 32, \"info\": { \"hobbies\": [\"basketball\",\"xbox\"]} } }";
         binder.Json(json);
         RequestModel model = binder.create(RequestModel.class);
@@ -92,7 +92,7 @@ public class ModelBinderTest {
 
     @Test
     public void test_json_complicated_model_binder() throws InputException, ClassNotFoundException {
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"name\": \"shachar\", \"age\": 32, \"infos\": [{ \"hobbies\": [\"basketball\",\"xbox\"]}  ] } }";
         binder.Json(json);
         RequestModel model = binder.create(RequestModel.class);
@@ -108,7 +108,7 @@ public class ModelBinderTest {
     @Test
     public void test_multiple_inputs_model_binder() throws InputException, ClassNotFoundException {
 
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"info\": { \"hobbies\": [\"soccer\",\"playstation\"]} }  }";
         binder.Json(json);
 
@@ -140,9 +140,9 @@ public class ModelBinderTest {
         for(int inx = 0;inx<10000;inx++) {
             timer.start();
 
-            ModelBinderContext binderContext = new ModelBinderContext();
-            ModelBinder dataBinder = new ModelBinder(binderContext, QueryString.class, Body.class);
-            ModelBinder headerBinder = new ModelBinder(binderContext, Header.class);
+            BindingContext binderContext = new BindingContext();
+            PojoBinder dataBinder = new PojoBinder(binderContext, QueryString.class, Body.class);
+            PojoBinder headerBinder = new PojoBinder(binderContext, Header.class);
 
             qs = "token=origamilogic";
             headerBinder.queryString(qs);
@@ -178,7 +178,7 @@ public class ModelBinderTest {
         Schema schema = makeSchema();
         byte[] bytes = avroWrite(schema);
         User model = new User();
-        ModelBinder binder = new ModelBinder();
+        PojoBinder binder = new PojoBinder();
 
         binder.avro(bytes, schema);
         binder.update(model);

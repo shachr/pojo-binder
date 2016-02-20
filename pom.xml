@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>origamilogic</groupId>
-    <artifactId>timeseries-api-java</artifactId>
-    <version>1.0</version>
+    <groupId>shachr</groupId>
+    <artifactId>pojo-binder</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
