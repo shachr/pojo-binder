@@ -9,7 +9,6 @@ import scala.Tuple2;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by shachar on 17/02/2016.
