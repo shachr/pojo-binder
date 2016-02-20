@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class ModelBinder {
+public class PojoBinder {
 
 
     final static Input _jsonInput;
@@ -25,11 +25,11 @@ public class ModelBinder {
     final ObjectMapper _mapper;
     Map<String,Object> _map;
 
-    public ModelBinder(Class<?>... annotationClass){
+    public PojoBinder(Class<?>... annotationClass){
         this(new HashMap(), annotationClass);
     }
 
-    public ModelBinder(Map<String,Object> hash, Class<?>... annotationClass){
+    public PojoBinder(Map<String,Object> hash, Class<?>... annotationClass){
         assert hash != null;
         assert annotationClass != null;
         BeanDeserializerModifier modifier = new AnnotationBeanDeserializerModifier(false, annotationClass);
@@ -39,7 +39,7 @@ public class ModelBinder {
         _map = hash;
     }
 
-    public ModelBinder(){
+    public PojoBinder(){
         _mapper = new ObjectMapper();
         _mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         _map = new HashMap();
