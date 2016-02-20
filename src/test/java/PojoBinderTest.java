@@ -6,8 +6,10 @@ import com.shachr.common.model.binding.PojoBinder;
 import com.shachr.common.model.binding.BindingContext;
 import com.shachr.common.model.binding.annotations.Body;
 import com.shachr.common.model.binding.annotations.Header;
-import com.shachr.common.model.binding.annotations.QueryString;
+import com.shachr.common.model.binding.inputs.Avro;
 import com.shachr.common.model.binding.inputs.InputException;
+import com.shachr.common.model.binding.inputs.Json;
+import com.shachr.common.model.binding.inputs.QueryString;
 import models.RequestModel;
 import models.User;
 import org.apache.avro.Schema;
@@ -34,11 +36,12 @@ import java.util.Set;
 public class PojoBinderTest {
 
     @Test
-    public void test_qs_simple_model_binder() throws InputException, ClassNotFoundException {
+    public void test_qs_simple_model_binder() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
         PojoBinder binder = new PojoBinder();
         Object qs = "user[name]=shachar&user[age]=32&user[info][hobbies][0]=basketball&user[info][hobbies][1]=xbox";
-        binder.queryString(qs);
-        RequestModel model = binder.create(RequestModel.class);
+        binder.read(QueryString.class, qs);
+        RequestModel model = binder.bind(RequestModel.class);
+
         Assert.assertNotNull(model.user);
         Assert.assertEquals(model.user.name, "shachar");
         Assert.assertEquals(model.user.age,32);
@@ -48,11 +51,11 @@ public class PojoBinderTest {
     }
 
     @Test
-    public void test_validation() throws InputException, ClassNotFoundException {
+    public void test_validation() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
         PojoBinder binder = new PojoBinder();
         Object qs = "user[age]=32";
-        binder.queryString(qs);
-        RequestModel model = binder.create(RequestModel.class);
+        binder.read(QueryString.class, qs);
+        RequestModel model = binder.bind(RequestModel.class);
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -61,11 +64,11 @@ public class PojoBinderTest {
     }
 
     @Test
-    public void test_qs_complicated_model_binder() throws InputException, ClassNotFoundException {
+    public void test_qs_complicated_model_binder() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
         PojoBinder binder = new PojoBinder();
         String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
-        binder.queryString(qs);
-        RequestModel model = binder.create(RequestModel.class);
+        binder.read(QueryString.class, qs);
+        RequestModel model = binder.bind(RequestModel.class);
         Assert.assertNotNull(model.user);
         Assert.assertEquals(model.user.name, "shachar");
         Assert.assertEquals(model.user.age,32);
@@ -75,12 +78,12 @@ public class PojoBinderTest {
     }
 
     @Test
-    public void test_json_simple_model_binder() throws InputException, ClassNotFoundException {
+    public void test_json_simple_model_binder() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
 
         PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"name\": \"shachar\", \"age\": 32, \"info\": { \"hobbies\": [\"basketball\",\"xbox\"]} } }";
-        binder.Json(json);
-        RequestModel model = binder.create(RequestModel.class);
+        binder.read(Json.class, json);
+        RequestModel model = binder.bind(RequestModel.class);
         Assert.assertNotNull(model.user);
         Assert.assertEquals(model.user.name, "shachar");
         Assert.assertEquals(model.user.age,32);
@@ -91,11 +94,11 @@ public class PojoBinderTest {
 
 
     @Test
-    public void test_json_complicated_model_binder() throws InputException, ClassNotFoundException {
+    public void test_json_complicated_model_binder() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
         PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"name\": \"shachar\", \"age\": 32, \"infos\": [{ \"hobbies\": [\"basketball\",\"xbox\"]}  ] } }";
-        binder.Json(json);
-        RequestModel model = binder.create(RequestModel.class);
+        binder.read(Json.class, json);
+        RequestModel model = binder.bind(RequestModel.class);
         Assert.assertNotNull(model.user);
         Assert.assertEquals(model.user.name, "shachar");
         Assert.assertEquals(model.user.age,32);
@@ -106,16 +109,16 @@ public class PojoBinderTest {
 
 
     @Test
-    public void test_multiple_inputs_model_binder() throws InputException, ClassNotFoundException {
+    public void test_multiple_inputs_model_binder() throws InputException, ClassNotFoundException, IllegalAccessException, IOException, InstantiationException {
 
         PojoBinder binder = new PojoBinder();
         String json = "{\"user\": { \"info\": { \"hobbies\": [\"soccer\",\"playstation\"]} }  }";
-        binder.Json(json);
+        binder.read(Json.class, json);
 
         String qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
-        binder.queryString(qs);
+        binder.read(QueryString.class, qs);
 
-        RequestModel model = binder.create(RequestModel.class);
+        RequestModel model = binder.bind(RequestModel.class);
 
         Assert.assertNotNull(model.user);
         Assert.assertEquals(model.user.name, "shachar");
@@ -141,19 +144,19 @@ public class PojoBinderTest {
             timer.start();
 
             BindingContext binderContext = new BindingContext();
-            PojoBinder dataBinder = new PojoBinder(binderContext, QueryString.class, Body.class);
+            PojoBinder dataBinder = new PojoBinder(binderContext, com.shachr.common.model.binding.annotations.QueryString.class, Body.class);
             PojoBinder headerBinder = new PojoBinder(binderContext, Header.class);
 
             qs = "token=origamilogic";
-            headerBinder.queryString(qs);
-            model = headerBinder.update(model);
+            headerBinder.read(QueryString.class, qs);
+            model = headerBinder.bind(model);
 
             json = "{\"user\": { \"info\": { \"hobbies\": [\"soccer\",\"playstation\"]} }, \"token\": \"123\"  }";
-            dataBinder.Json(json);
+            dataBinder.read(Json.class, json);
 
             qs = "user[name]=shachar&user[age]=32&user[infos][0][hobbies][0]=basketball&user[infos][0][hobbies][1]=xbox";
-            dataBinder.queryString(qs);
-            model = dataBinder.update(model);
+            dataBinder.read(QueryString.class, qs);
+            model = dataBinder.bind(model);
             timer.end();
         }
 
@@ -180,8 +183,8 @@ public class PojoBinderTest {
         User model = new User();
         PojoBinder binder = new PojoBinder();
 
-        binder.avro(bytes, schema);
-        binder.update(model);
+        binder.read(Avro.class, bytes, schema);
+        binder.bind(model);
         Assert.assertNotNull(model.name);
         Assert.assertEquals("Person A", model.name);
         Assert.assertEquals(23, model.age);

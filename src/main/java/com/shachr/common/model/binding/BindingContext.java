@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by shachar on 14/02/2016.
  * TODO:
- * 1. extend jackson to accept new annotation (@Header, @Body, @QueryString, @PathParam)
+ * 1. extend jackson to accept new annotation (@Header, @Body, @QueryStringParser, @PathParam)
  *    http://wiki.fasterxml.com/JacksonFeatureModules
  *
  * 2. Support jackson injection :
