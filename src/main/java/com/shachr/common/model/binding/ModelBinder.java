@@ -54,7 +54,7 @@ public class ModelBinder {
         _map = _qsInput.read(qs, _map);
     }
 
-    public void avro(Object bytes, Schema schema)throws InputException {
+    public void avro(Object bytes, Optional<Schema> schema)throws InputException {
         _map = _avroInput.read(new Tuple2(schema, bytes), _map);
     }
 
