@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.shachr.common.model.binding.annotations.Body;
 import com.shachr.common.model.binding.annotations.Header;
-import com.shachr.common.model.binding.annotations.QueryString;
+import com.shachr.common.model.binding.annotations.Query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class AnnotationBeanDeserializerModifier extends BeanDeserializerModifier
     static{
         _allAnnotations = new ArrayList();
         _allAnnotations.add(Header.class);
-        _allAnnotations.add(QueryString.class);
+        _allAnnotations.add(Query.class);
         _allAnnotations.add(Body.class);
     }
 

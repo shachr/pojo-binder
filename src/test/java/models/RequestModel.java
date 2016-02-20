@@ -1,7 +1,7 @@
 package models;
 import com.shachr.common.model.binding.annotations.Body;
 import com.shachr.common.model.binding.annotations.Header;
-import com.shachr.common.model.binding.annotations.QueryString;
+import com.shachr.common.model.binding.annotations.Query;
 
 import javax.validation.*;
 import javax.validation.constraints.*;
@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 public class RequestModel {
 
     @Body()
-    @QueryString()
+    @Query()
     @Valid
     public User user;
 
